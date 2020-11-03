@@ -6,10 +6,10 @@ from Hash import HashMap
 mostrar = Functions()
 data_functions = ManipulateData()
 B = BTree()
-H = HashMap()
+B.populate_tree()
 
-def initialize_tree():
-    B.populate_tree()
+H = HashMap()
+H.populate_hash()
 
 
 def show_admin_menu():
@@ -23,6 +23,7 @@ def show_admin_menu():
     print('4 - Criar arquivo de índices por ID')
     print('5 - Criar arquivo de índices por Nome')
     print('6 - Ordenar índices por Nome')
+    print('7 - Criar indices por id com salto')
 
     option1 = int(input('Informe a opção: '))
 
@@ -39,6 +40,8 @@ def show_admin_menu():
         data_functions.order_index_name()
     elif option1 is 6:
         data_functions.order_index_name()
+    elif option1 is 7:
+        mostrar.create_index_file_by_id()
     else:
         print('Inválido')
 
@@ -63,6 +66,7 @@ def show_menu_apresentacao():
     print('4 - Pesquisa árvore binária (Em memória)')
     print('5 - Hash por data (Em memória)')
     print('6 - Resposta da hipotese')
+    print('7 - Outra forma pesquisa binaria dados por índice')
 
     option2 = int(input('Informe a opção: '))
 
@@ -71,19 +75,22 @@ def show_menu_apresentacao():
     elif option2 is 1:
         mostrar.binarySearch_it('1320547053177573378')
     elif option2 is 2:
-        mostrar.binarySearch_it_ID('1318475486083883009')
+        mostrar.binarySearch_it_ID('1320878233915719684')
     elif option2 is 3:
         mostrar.binarySearch_USER('ygorasmar')
     elif option2 is 4:
-        initialize_tree()
-        position = B.find('VALDIRANTONIOC1')
-        pos = int(position.position)
-        mostrar.direct_in_data(position=pos)
+        position = B.find('glhrrrme')
+        if position != False:
+            print(position)
+            pos = int(position.position)
+            mostrar.direct_in_data(position=pos)
+        else:
+            print('Não encontrado')
     elif option2 is 5:
-        H.populate_hash()
-        #H.print()
         pos_hash = int(H.get('2020-10-28 19:59:38'))
         mostrar.direct_in_data(position=pos_hash)
+    elif option2 is 7:
+        mostrar.binarySearch_it_index_id('1320878233915719684')
     elif option2 is 6:
         hipo = mostrar.answare_hypothesis()
 

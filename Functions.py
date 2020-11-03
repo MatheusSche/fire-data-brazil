@@ -50,6 +50,102 @@ class Functions():
 
         twitter_data.close()
 
+    def binarySearch_it_index_id(self, key):
+
+        index_data = open('twitter-index-id.bin', 'rb')
+
+        index_data.seek(0, 2)
+        tamanho_index = index_data.tell()
+
+        index_data.seek(0, 0)
+        position_index = 0
+
+        last_position = 0
+        last_id = 0
+        flag = 0
+
+        while position_index < tamanho_index:
+            line = str(index_data.read(52).decode('utf-8'))
+            line = line.split(';')
+            current_position = int(line[0])
+            current_id = str(line[1])
+
+            if key > current_id:
+                last_position = current_position
+                last_id = current_id
+
+                position_index += 52
+            else:
+                begin = last_position
+                end = current_position
+                flag = 1
+                break
+
+        index_data.close()
+
+        if flag == 0:
+            return 0
+
+        arq_b = open('twitter-data-ordered.bin', 'rb')
+        arq_b.seek(0, 2)
+        length = arq_b.tell()
+
+        left = begin
+        right = end
+        arq_b.seek(0, 0)
+        while (left <= right):
+
+            middle = int((left + right) // 2)
+            while middle % 502 != 0:
+                middle = middle - 1
+            arq_b.seek(middle, 0)
+            valor = arq_b.read(502).decode('utf-8')
+            valor = str(valor)
+            valor = valor.split(';')
+            id = int(valor[0])
+            print('Comparando {} --- {}'.format(id, key))
+            if int(id) == int(key):
+                print(middle, 'Encontrou')
+                break
+            elif int(key) > int(id):
+                left = middle + 502
+            elif int(key) < int(id):
+                right = middle - 502
+        else:
+            print("Value not found")
+
+        arq_b.close()
+
+    def create_index_file_by_id(self):
+        twitter_data = open('twitter-data-ordered.bin', 'rb')
+
+        twitter_data.seek(0, 2)
+        tamanho = twitter_data.tell()
+
+        twitter_data.seek(0, 0)
+        position = 0
+
+        while position < tamanho:
+            print(position, tamanho)
+            twitter_data.seek(position, 0)
+            line = str(twitter_data.read(502).decode('utf-8'))
+            line = line.split(';')
+            id = line[0]
+            register = ''
+            register += str(position) + ';' + str(id) + ';'
+
+            string_size = len(register)
+            register += '0' * (50 - string_size)
+            register += ';' + '\n'
+
+            with open('twitter-index-id.bin', 'ab') as twitter_index:
+                register = register.encode('utf-8')
+                twitter_index.write(register)
+
+            position += (502 * 500)
+
+        twitter_data.close()
+
     def create_index_file(self):
         twitter_data = open('twitter-data-ordered.bin', 'rb')
 
